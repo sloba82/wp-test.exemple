@@ -17,29 +17,40 @@
 
   <div class="container container--narrow page-section">
 
-<? var_dump(wp_get_post_parent_id(get_the_ID()));?>
-
-
-    <?php  if (wp_get_post_parent_id(get_the_ID())) { ?>
+    <?php 
+    $parentId = wp_get_post_parent_id(get_the_ID());
+    
+    if ($parentId) { ?>
 
       <div class="metabox metabox--position-up metabox--with-home-link">
-        <p><a class="metabox__blog-home-link" href="#"><i class="fa fa-home" aria-hidden="true"></i> Back to About Us</a> <a href=""><span class="metabox__main"><?= the_title();?></span></a></p>
+        <p>
+          <a class="metabox__blog-home-link" href="<?= get_permalink($parentId)?>">
+            <i class="fa fa-home" aria-hidden="true"></i> Back to <?= get_the_title($parentId);?>
+          </a> 
+            <span class="metabox__main"><?= the_title();?></span>
+        </p>
       </div>
 
     <?php
        }
     ?>
 
-
-
-    
-    <!-- <div class="page-links">
-      <h2 class="page-links__title"><a href="#">About Us</a></h2>
+<?php if ($parentId) {?>
+    <div class="page-links">
+      <h2 class="page-links__title"><a href="<?= get_permalink($parentId)?>"><?= get_the_title($parentId);?></a></h2>
       <ul class="min-list">
-        <li class="current_page_item"><a href="#">Our History</a></li>
-        <li><a href="#">Our Goals</a></li>
+
+      <?php
+          wp_list_pages([
+            'title_li' => null,
+            'child_of' => $parentId ? $parentId : get_the_ID()
+          ]);
+      ?>
       </ul>
-    </div> -->
+    </div>
+<?php }?>
+
+
 
     <div class="generic-content">
       <?= the_content();?>
